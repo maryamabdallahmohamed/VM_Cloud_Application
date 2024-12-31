@@ -203,46 +203,69 @@ class DesktopApplication(ctk.CTk):
             messagebox.showwarning("Warning", "Unable to list VMs. Is virtualization management tool installed?")
         except FileNotFoundError:
             messagebox.showerror("Error", "Virtualization management tool not found.")
-
+                
     def show_docker_files_section(self):
-        """Display Docker Files section"""
-        # Clear previous content
-        for widget in self.main_frame.winfo_children():
-            widget.destroy()
+            """Display Docker Files section"""
+            # Clear previous content
+            for widget in self.main_frame.winfo_children():
+                widget.destroy()
 
-        # Docker Files Frame
-        docker_frame = ctk.CTkFrame(self.main_frame,  bg_color='#4CB572', fg_color='#4CB572')
-        docker_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
+            # Docker Files Frame
+            docker_frame = ctk.CTkFrame(self.main_frame, bg_color='#4CB572', fg_color='#4CB572')
+            docker_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
 
-        # Title
-        title_label = ctk.CTkLabel(docker_frame, text="Docker Files Management", 
-                                font=('Helvetica', 16, 'bold'))
-        title_label.pack(pady=10)
+            # Title
+            title_label = ctk.CTkLabel(docker_frame, text="Docker Files Management",
+                                    font=('Helvetica', 16, 'bold'))
+            title_label.pack(pady=10)
 
-        # Dockerfile Creation Section
-        create_frame = ctk.CTkFrame(docker_frame, bg_color='#4CB572', fg_color='#4CB572')
-        create_frame.pack(fill=ctk.BOTH ,padx=10, pady=10)
+            # Dockerfile Creation Section
+            create_frame = ctk.CTkFrame(docker_frame, bg_color='#4CB572', fg_color='#4CB572')
+            create_frame.pack(fill=ctk.BOTH, padx=10, pady=10)
 
-        # Dockerfile Path
-        path_label = ctk.CTkLabel(create_frame, text="Dockerfile Path:")
-        path_label.pack(side=ctk.LEFT, padx=5)
-        path_entry = tk.Entry(create_frame, textvariable=self.dockerfile_path_var, width=50)
-        path_entry.pack(side=ctk.LEFT, padx=5)
-        browse_btn = ctk.CTkButton(create_frame, text="Browse", command=self.set_dockerfile_path,bg_color='#135E4B',fg_color='#135E4B',hover_color='#A1D8B5',
-                                   background_corner_colors=(['#135E4B','#135E4B','#135E4B','#135E4B']),
-                                   corner_radius=30,width=70)
-        browse_btn.pack(side=ctk.LEFT, padx=5)
+            # Base Image Input
+            base_image_label = ctk.CTkLabel(create_frame, text="Base Image:")
+            base_image_label.pack(pady=5, anchor='w')
+            self.base_image_entry = ctk.CTkEntry(create_frame, width=300)
+            self.base_image_entry.pack(pady=5, anchor='w')
 
-        # Create Dockerfile Button
-        create_btn = ctk.CTkButton(docker_frame, text="Create Dockerfile", command=self.create_dockerfile,
-                                    bg_color='#135E4B',fg_color='#135E4B',hover_color='#A1D8B5',
-                                   background_corner_colors=(['#135E4B','#135E4B','#135E4B','#135E4B']),
-                                   corner_radius=30,width=70)
-        create_btn.pack(pady=10)
+            # Commands Input
+            commands_label = ctk.CTkLabel(create_frame, text="Commands (one per line):")
+            commands_label.pack(pady=5, anchor='w')
+            self.commands_text = ctk.CTkTextbox(create_frame, height=100, width=300)
+            self.commands_text.pack(pady=5, anchor='w')
+
+            # Environment Variables Input
+            env_vars_label = ctk.CTkLabel(create_frame, text="Environment Variables (KEY=VALUE, one per line):")
+            env_vars_label.pack(pady=5, anchor='w')
+            self.env_vars_text = ctk.CTkTextbox(create_frame, height=60, width=300)
+            self.env_vars_text.pack(pady=5, anchor='w')
+
+            # Ports Input
+            ports_label = ctk.CTkLabel(create_frame, text="Exposed Ports (comma-separated):")
+            ports_label.pack(pady=5, anchor='w')
+            self.ports_entry = ctk.CTkEntry(create_frame, width=300)
+            self.ports_entry.pack(pady=5, anchor='w')
+            
+            # Dockerfile Path
+            path_label = ctk.CTkLabel(create_frame, text="Dockerfile Path:")
+            path_label.pack(pady=5, anchor='w')
+            self.path_entry = ctk.CTkEntry(create_frame, textvariable=self.dockerfile_path_var, width=300)
+            self.path_entry.pack(pady=5, anchor='w')
+            browse_btn = ctk.CTkButton(create_frame, text="Browse", command=self.set_dockerfile_path,
+                                    bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
+                                    corner_radius=30, width=70)
+            browse_btn.pack(pady=5, anchor='w')
+
+            # Create Dockerfile Button
+            create_btn = ctk.CTkButton(docker_frame, text="Create Dockerfile", command=self.create_dockerfile,
+                                        bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
+                                        corner_radius=30, width=120)
+            create_btn.pack(pady=10)
 
     def set_dockerfile_path(self):
         """Set path for Dockerfile"""
-        path = filedialog.askdirectory(title="Select Dockerfile Save Location")
+        path = ctk.filedialog.askdirectory(title="Select Dockerfile Save Location")
         if path:
             self.dockerfile_path_var.set(os.path.join(path, "Dockerfile"))
 
@@ -250,25 +273,37 @@ class DesktopApplication(ctk.CTk):
         """Create a new Dockerfile"""
         save_path = self.dockerfile_path_var.get()
         if not save_path:
-            messagebox.showerror("Error", "Please specify a path to save the Dockerfile.")
+            ctk.messagebox.showerror("Error", "Please specify a path to save the Dockerfile.")
             return
 
-        # Prompt for Dockerfile content
-        base_image = simpledialog.askstring("Base Image", "Enter base image (e.g., python:3.9):")
-        commands = simpledialog.askstring("Commands", "Enter commands (one per line):")
+        # Gather inputs
+        base_image = self.base_image_entry.get().strip()
+        commands = self.commands_text.get("1.0", "end").strip()
+        env_vars = self.env_vars_text.get("1.0", "end").strip()
+        ports = self.ports_entry.get().strip()
 
         # Generate Dockerfile content
         dockerfile_content = f"FROM {base_image or 'ubuntu:latest'}\n"
+
+        if env_vars:
+            for env in env_vars.splitlines():
+                dockerfile_content += f"ENV {env.strip()}\n"
+
         if commands:
-            for cmd in commands.split('\n'):
-                dockerfile_content += f"RUN {cmd}\n"
+            for cmd in commands.splitlines():
+                dockerfile_content += f"RUN {cmd.strip()}\n"
+
+        if ports:
+            for port in ports.split(','):
+                dockerfile_content += f"EXPOSE {port.strip()}\n"
 
         try:
             with open(save_path, "w") as f:
                 f.write(dockerfile_content)
-            messagebox.showinfo("Success", f"Dockerfile created at {save_path}")
+            ctk.messagebox.showinfo("Success", f"Dockerfile created at {save_path}")
         except Exception as e:
-            messagebox.showerror("Error", f"Failed to create Dockerfile: {str(e)}")
+            ctk.messagebox.showerror("Error", f"Failed to create Dockerfile: {str(e)}")
+
 
     def show_docker_hub_section(self):
         """Display Docker Hub section"""
@@ -287,7 +322,7 @@ class DesktopApplication(ctk.CTk):
         # Search Entry
         search_label = ctk.CTkLabel(search_frame, text="Search Docker Hub:")
         search_label.pack(side=ctk.LEFT, padx=5)
-        search_entry = tk.Entry(search_frame, width=50)
+        search_entry = ctk.CTkEntry(search_frame, width=300)
         search_entry.pack(side=ctk.LEFT, padx=5)
 
         # Search Button
@@ -298,7 +333,7 @@ class DesktopApplication(ctk.CTk):
         search_btn.pack(side=ctk.LEFT, padx=5)
 
         # Results Listbox
-        self.docker_hub_listbox = tk.Listbox(hub_frame, width=70, height=20)
+        self.docker_hub_listbox = ctk.CTkTextbox(hub_frame, width=70, height=20)
         self.docker_hub_listbox.pack(expand=True, fill=ctk.BOTH, padx=10, pady=10)
 
     def search_docker_hub(self, query):
@@ -352,13 +387,13 @@ class DesktopApplication(ctk.CTk):
         # Images Listbox
         images_label = ctk.CTkLabel(list_frame, text="Docker Images:")
         images_label.pack()
-        self.images_listbox = tk.Listbox(list_frame, width=70, height=10)
+        self.images_listbox = ctk.CTkTextbox(list_frame, width=70, height=10)
         self.images_listbox.pack(expand=True, fill=ctk.BOTH)
 
         # Containers Listbox
         containers_label = ctk.CTkLabel(list_frame, text="Docker Containers:")
         containers_label.pack()
-        self.containers_listbox = tk.Listbox(list_frame, width=70, height=10)
+        self.containers_listbox = ctk.CTkTextbox(list_frame, width=70, height=10)
         self.containers_listbox.pack(expand=True, fill=ctk.BOTH)
 
     def list_docker_images(self):
