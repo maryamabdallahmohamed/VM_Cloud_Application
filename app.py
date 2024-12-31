@@ -28,14 +28,7 @@ class DesktopApplication(ctk.CTk):
         self.dockerfile_path_var = ctk.StringVar()
         self.docker_image_name_var = ctk.StringVar()
 
-        # # Create a consistent style for buttons
-        # self.ctk.CTkButton.configure(self, 
-        #                         fg_color=self.GREEN_DARK, 
-        #                         hover_color=self.GREEN_HOVER, 
-        #                         text_color='white', 
-        #                         corner_radius=10)
 
-        # Create main UI
         self.create_main_interface()
 
     def create_main_interface(self):
@@ -139,8 +132,7 @@ class DesktopApplication(ctk.CTk):
         list_label = ctk.CTkLabel(list_frame, text="Existing Virtual Machines")
         list_label.pack()
 
-        # VM Listbox
-        self.vm_listbox =tk.Listbox(list_frame, width=50, height=10)
+        self.vm_listbox = ctk.CTkTextbox(list_frame, width=500, height=200)
         self.vm_listbox.pack(expand=True, fill=ctk.BOTH)
 
         # Refresh VM List Button
