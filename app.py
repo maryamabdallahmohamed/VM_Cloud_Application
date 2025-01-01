@@ -53,6 +53,16 @@ class DesktopApplication(ctk.CTk):
         
     def homepage(self):
         """Display the homepage with Application Features"""
+        #Remove any existing frames
+        if hasattr(self, 'vm_frame'):
+            self.vm_frame.destroy()
+        if hasattr(self, 'docker_frame'):
+            self.docker_frame.destroy()
+        if hasattr(self, 'containers_frame'):
+            self.containers_frame.destroy()
+        if hasattr(self, 'docker_control_frame'):
+            self.docker_control_frame.destroy()
+        
         # Create homepage frame
         self.homepage_frame = ctk.CTkFrame(self, bg_color=self.GREEN_LIGHT, fg_color=self.GREEN_LIGHT)
         self.homepage_frame.pack(expand=True, fill=BOTH, padx=20, pady=20)
@@ -486,70 +496,73 @@ class DesktopApplication(ctk.CTk):
         except FileNotFoundError:
             messagebox.showerror("Error", "Docker is not installed or not in PATH.")
 
-
     def docker_control_panel(self):
-            """Set up the Docker control panel layout"""
-            if self.homepage_frame:
-                self.homepage_frame.destroy()
+        if self.homepage_frame:
+            self.homepage_frame.destroy()
 
-            # Docker control frame for containers
-            self.docker_control_frame = ctk.CTkFrame(self,bg_color='#4CB572', fg_color='#4CB572')
-            self.docker_control_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
+        # Docker control frame centered
+        self.docker_control_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
+        self.docker_control_frame.pack(expand=True, fill=ctk.BOTH)
 
-            # Feature 1: Stop container
-            self.stop_container_label = ctk.CTkLabel(self.docker_control_frame, text="Container ID/Name:")
-            self.stop_container_label.grid(row=0, column=0, padx=10, pady=5)
+        # Title for Docker Control Panel
+        title_label = ctk.CTkLabel(self.docker_control_frame, text="Docker Control Panel", font=('Helvetica', 18, 'bold'))
+        title_label.grid(row=0, column=10, columnspan=3, padx=10, pady=15, sticky='w')
 
-            self.stop_container_entry = ctk.CTkEntry(self.docker_control_frame, width=150)
-            self.stop_container_entry.grid(row=0, column=1, padx=10, pady=5)
+        # Container Control Section
+        self.stop_container_label = ctk.CTkLabel(self.docker_control_frame, text="Container ID/Name:")
+        self.stop_container_label.grid(row=1, column=10, padx=10, pady=10, sticky='w')
 
-            self.stop_button = ctk.CTkButton(self.docker_control_frame, text="Stop Selected Container", command=self.stop_selected_container)
-            self.stop_button.grid(row=0, column=2, padx=10, pady=5)
+        self.stop_container_entry = ctk.CTkEntry(self.docker_control_frame, width=200)
+        self.stop_container_entry.grid(row=1, column=12, padx=10, pady=10, sticky='w')
 
-            # Feature 2: Download Docker Image
-            self.download_button = ctk.CTkButton(self.docker_control_frame, text="Download Image", command=self.download_image)
-            self.download_button.grid(row=1, column=0, padx=10, pady=5)
+        self.stop_button = ctk.CTkButton(self.docker_control_frame, text="Stop Selected Container", command=self.stop_selected_container)
+        self.stop_button.grid(row=1, column=13, padx=10, pady=10)
 
-            # Feature 4: Build Docker Image
-            self.build_image_label = ctk.CTkLabel(self.docker_control_frame, text="Dockerfile Path:")
-            self.build_image_label.grid(row=2, column=0, padx=10, pady=5)
+        # Download Docker Image Section
+        self.download_button = ctk.CTkButton(self.docker_control_frame, text="Download Image", command=self.download_image)
+        self.download_button.grid(row=2, column=13, columnspan=3, padx=10, pady=15)
 
-            self.build_image_entry = ctk.CTkEntry(self.docker_control_frame, width=150)
-            self.build_image_entry.grid(row=2, column=1, padx=10, pady=5)
+        # Build Docker Image Section
+        self.build_image_label = ctk.CTkLabel(self.docker_control_frame, text="Dockerfile Path:")
+        self.build_image_label.grid(row=3, column=10, padx=10, pady=10, sticky='w')
 
-            self.build_button = ctk.CTkButton(self.docker_control_frame, text="Browse Dockerfike", command=self.browse_disk_dockerfile)
-            self.build_button.grid(row=2, column=2, padx=10, pady=5)
-            
-            self.build_image_name_label = ctk.CTkLabel(self.docker_control_frame, text="Enter Docker image name:")
-            self.build_image_name_label.grid(row=3, column=0, padx=10, pady=5)
-            
-            self.build_image_name_entry = ctk.CTkEntry(self.docker_control_frame, width=150)
-            self.build_image_name_entry.grid(row=3, column=1, padx=10, pady=5)
+        self.build_image_entry = ctk.CTkEntry(self.docker_control_frame, width=200)
+        self.build_image_entry.grid(row=3, column=12, padx=10, pady=10, sticky='w')
 
-            self.build_button = ctk.CTkButton(self.docker_control_frame, text="Build Image", command=self.build_docker_image)
-            self.build_button.grid(row=3, column=2, padx=10, pady=5)    
+        self.build_button = ctk.CTkButton(self.docker_control_frame, text="Browse Dockerfile", command=self.browse_disk_dockerfile)
+        self.build_button.grid(row=3, column=13, padx=10, pady=10)
 
-            # Feature 5: Pull Docker Image
-            self.pull_image_label = ctk.CTkLabel(self.docker_control_frame, text="Pull Image Name:")
-            self.pull_image_label.grid(row=4, column=0, padx=10, pady=5)
+        self.build_image_name_label = ctk.CTkLabel(self.docker_control_frame, text="Enter Docker Image Name:")
+        self.build_image_name_label.grid(row=4, column=10, padx=10, pady=10, sticky='w')
 
-            self.pull_image_entry = ctk.CTkEntry(self.docker_control_frame, width=150)
-            self.pull_image_entry.grid(row=4, column=1, padx=10, pady=5)
+        self.build_image_name_entry = ctk.CTkEntry(self.docker_control_frame, width=200)
+        self.build_image_name_entry.grid(row=4, column=12, padx=10, pady=10, sticky='w')
 
-            self.pull_button = ctk.CTkButton(self.docker_control_frame, text="Pull Image", command=self.pull_docker_image)
-            self.pull_button.grid(row=4, column=2, padx=10, pady=5)
+        self.build_button = ctk.CTkButton(self.docker_control_frame, text="Build Image", command=self.build_docker_image)
+        self.build_button.grid(row=4, column=13, padx=10, pady=10)
 
-            # Feature 6: Search Local Image
-            self.local_search_label = ctk.CTkLabel(self.docker_control_frame, text="Search Local Image:")
-            self.local_search_label.grid(row=5, column=0, padx=10, pady=5)
+        # Pull Docker Image Section
+        self.pull_image_label = ctk.CTkLabel(self.docker_control_frame, text="Pull Image Name:")
+        self.pull_image_label.grid(row=5, column=10, padx=10, pady=10, sticky='w')
 
-            self.local_search_entry = ctk.CTkEntry(self.docker_control_frame, width=150)
-            self.local_search_entry.grid(row=5, column=1, padx=10, pady=5)
+        self.pull_image_entry = ctk.CTkEntry(self.docker_control_frame, width=200)
+        self.pull_image_entry.grid(row=5, column=12, padx=10, pady=10, sticky='w')
 
-            self.local_search_button = ctk.CTkButton(self.docker_control_frame, text="Search Local Image", command=self.search_local_image)
-            self.local_search_button.grid(row=5, column=2, padx=10, pady=5)
-            # Add return button
-            self.add_return_button(self.docker_control_frame)
+        self.pull_button = ctk.CTkButton(self.docker_control_frame, text="Pull Image", command=self.pull_docker_image)
+        self.pull_button.grid(row=5, column=13, padx=10, pady=10)
+
+        # Search Local Image Section
+        self.local_search_label = ctk.CTkLabel(self.docker_control_frame, text="Search Local Image:")
+        self.local_search_label.grid(row=6, column=10, padx=10, pady=10, sticky='w')
+
+        self.local_search_entry = ctk.CTkEntry(self.docker_control_frame, width=200)
+        self.local_search_entry.grid(row=6, column=12, padx=10, pady=10, sticky='w')
+
+        self.local_search_button = ctk.CTkButton(self.docker_control_frame, text="Search Local Image", command=self.search_local_image)
+        self.local_search_button.grid(row=6, column=13, padx=10, pady=10)
+
+        # Add return button
+        self.add_return_button(self.docker_control_frame,7,12)
 
     
     def stop_selected_container(self):
