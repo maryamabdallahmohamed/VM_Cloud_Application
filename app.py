@@ -185,21 +185,35 @@ class DesktopApplication(ctk.CTk):
 
     def list_vms(self):
         """List existing virtual machines"""
-        self.vm_listbox.delete(0, ctk.END)
+        self.vm_listbox.delete("1.0", "end") 
         try:
-            # This is a simplified VM listing - you might need to adjust based on your specific VM management
-            result = subprocess.run(["virsh", "list", "--all"], capture_output=True, text=True, check=True)
-            lines = result.stdout.strip().split('\n')[2:]  # Skip header lines
-            
+            # Run the command to list VMs
+            result = subprocess.run(
+                ["virsh", "list", "--all"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            lines = result.stdout.strip().split('\n')[2:]  # Skip the header lines
+
+            # Parse each line of output
             for line in lines:
-                if line.strip():
-                    parts = line.split()
-                    if len(parts) >= 3:
-                        self.vm_listbox.insert(ctk.END, f"ID: {parts[0]}, Name: {parts[1]}, State: {parts[2]}")
-        except subprocess.CalledProcessError:
-            messagebox.showwarning("Warning", "Unable to list VMs. Is virtualization management tool installed?")
+                if line.strip():  # Ignore empty lines
+                    parts = line.split(maxsplit=2)  # Split into up to 3 parts (ID, Name, State)
+                    if len(parts) == 3:
+                        vm_id, vm_name, vm_state = parts
+                        self.vm_listbox.insert(ctk.END, f"ID: {vm_id}, Name: {vm_name}, State: {vm_state}")
+                    else:
+                        self.vm_listbox.insert(ctk.END, f"Unrecognized format: {line}")
+
+        except subprocess.CalledProcessError as e:
+            messagebox.showwarning("Warning", f"Unable to list VMs. Error: {e}")
         except FileNotFoundError:
-            messagebox.showerror("Error", "Virtualization management tool not found.")
+            messagebox.showerror("Error", "Virtualization management tool not found. Please install it.")
+        except Exception as e:
+            messagebox.showerror("Error", f"An unexpected error occurred: {e}")
+            
+            
                 
     def show_docker_files_section(self):
             """Display Docker Files section"""
