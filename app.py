@@ -39,9 +39,8 @@ class DesktopApplication(ctk.CTk):
             frame,
             text="Return to Homepage",
             command=lambda: self.return_to_homepage(frame),
-            bg_color='#00BCD4',
-            hover_color='#26C6DA',
-            corner_radius=30
+            bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4"
         )
         return_btn.grid(row=r, column=c, padx=10, pady=10)
 
@@ -76,11 +75,13 @@ class DesktopApplication(ctk.CTk):
                                 command=command,
                                 width=400,
                                 height=50,
-                                bg_color='#00BCD4',
-                                hover_color='#26C6DA',
                                 font=('Helvetica', 16),
-                                border_color='#00BCD4')
-            btn.pack(padx=10, pady=15)
+                                bg_color="transparent", hover_color='#26C6DA',
+                                corner_radius=20,              
+                                border_width=2,                  
+                                border_color="#00BCD4" 
+                                )
+            btn.pack(padx=10, pady=20)
 
     def show_vm_section(self):
         """Display Virtual Machine configuration section"""
@@ -120,9 +121,8 @@ class DesktopApplication(ctk.CTk):
         disk_entry.grid(row=2, column=1, padx=10, pady=10, sticky='w')
 
         # Browse Disk Button
-        browse_btn = ctk.CTkButton(config_frame, text="Browse", command=self.browse_disk,
-                                   bg_color='#00BCD4', fg_color='#00BCD4', hover_color='#26C6DA',
-                                   corner_radius=30, width=100)
+        browse_btn = ctk.CTkButton(config_frame, text="Browse", command=self.browse_disk,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4")
         browse_btn.grid(row=3, column=1, padx=10, pady=10, sticky='w')
 
         # Action Buttons Frame (for Create and List VM buttons)
@@ -130,17 +130,14 @@ class DesktopApplication(ctk.CTk):
         action_frame.grid(row=2, column=10, columnspan=3, padx=20, pady=20, sticky='nsew')
 
         # Create VM Button
-        create_vm_btn = ctk.CTkButton(action_frame, text="Create Virtual Machine",
-                                      command=self.create_vm, bg_color='#00BCD4',
-                                      fg_color='#00BCD4', hover_color='#26C6DA',
-                                      corner_radius=30, width=200)
+        create_vm_btn = ctk.CTkButton(action_frame, text="Create Virtual Machine",command=self.create_vm,bg_color="transparent", hover_color='#26C6DA',
+        corner_radius=20, border_width=2, border_color="#00BCD4" ,width=200)
         create_vm_btn.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
 
         # List VMs Button
         list_vms_btn = ctk.CTkButton(action_frame, text="List Virtual Machines",
-                                     command=self.list_vms, bg_color='#00BCD4',
-                                     fg_color='#00BCD4', hover_color='#26C6DA',
-                                     corner_radius=30, width=200)
+                                     command=self.list_vms,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4", width=200)
         list_vms_btn.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
 
         # VM Listbox
@@ -290,14 +287,14 @@ class DesktopApplication(ctk.CTk):
         self.path_entry.grid(row=4, column=11, padx=10, pady=10, sticky='w')
 
         browse_btn = ctk.CTkButton(create_frame, text="Browse", command=self.set_dockerfile_path,
-                                   bg_color='#00BCD4', fg_color='#00BCD4', hover_color='#26C6DA',
-                                   corner_radius=30, width=70, font=('Helvetica', 12))
+                                  bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4", width=70, font=('Helvetica', 12))
         browse_btn.grid(row=4, column=13, padx=10, pady=10, sticky='w')
 
         # Create Dockerfile Button
         create_btn = ctk.CTkButton(self.docker_frame, text="Create Dockerfile", command=self.create_dockerfile,
-                                   bg_color='#00BCD4', fg_color='#00BCD4', hover_color='#26C6DA',
-                                   corner_radius=30, width=120, font=('Helvetica', 14))
+                                   bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4", width=120, font=('Helvetica', 14))
         create_btn.grid(row=2, column=10, columnspan=3, padx=10, pady=20, sticky='nsew')
 
         # Add return button
@@ -370,9 +367,8 @@ class DesktopApplication(ctk.CTk):
             search_frame,
             text="Search",
             command=lambda: self.search_docker_hub(search_entry.get()),
-            fg_color='#00BCD4',
-            hover_color='#26C6DA',
-            corner_radius=30,
+            bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4",
             width=100
         )
         search_btn.grid(row=0, column=2)
@@ -435,16 +431,13 @@ class DesktopApplication(ctk.CTk):
 
         # List Images Button
         list_images_btn = ctk.CTkButton(btn_frame, text="List Docker Images",
-                                        command=self.list_docker_images,
-                                        fg_color='#00BCD4', hover_color='#26C6DA',
-                                        corner_radius=30, width=150)
+                                        command=self.list_docker_images,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4", width=150)
         list_images_btn.grid(row=0, column=0, padx=10, pady=5)
 
         # List Containers Button
-        list_containers_btn = ctk.CTkButton(btn_frame, text="List Docker Containers",
-                                            command=self.list_docker_containers,
-                                            fg_color='#00BCD4', hover_color='#26C6DA',
-                                            corner_radius=30, width=150)
+        list_containers_btn = ctk.CTkButton(btn_frame, text="List Docker Containers",command=self.list_docker_containers,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4", width=150)
         list_containers_btn.grid(row=0, column=1, padx=10, pady=5)
 
         # Listboxes Frame
@@ -536,12 +529,14 @@ class DesktopApplication(ctk.CTk):
         self.stop_container_entry.grid(row=1, column=12, padx=10, pady=10, sticky='w')
 
         self.stop_button = ctk.CTkButton(self.docker_control_frame, text="Stop Selected Container",
-                                         command=self.stop_selected_container)
+                                         command=self.stop_selected_container,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4")
         self.stop_button.grid(row=1, column=13, padx=10, pady=10)
 
         # Download Docker Image Section
         self.download_button = ctk.CTkButton(self.docker_control_frame, text="Download Image",
-                                             command=self.download_image)
+                                             command=self.download_image,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4")
         self.download_button.grid(row=2, column=13, columnspan=3, padx=10, pady=15)
 
         # Build Docker Image Section
@@ -552,7 +547,8 @@ class DesktopApplication(ctk.CTk):
         self.build_image_entry.grid(row=3, column=12, padx=10, pady=10, sticky='w')
 
         self.build_button = ctk.CTkButton(self.docker_control_frame, text="Browse Dockerfile",
-                                          command=self.browse_disk_dockerfile)
+                                          command=self.browse_disk_dockerfile,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4")
         self.build_button.grid(row=3, column=13, padx=10, pady=10)
 
         self.build_image_name_label = ctk.CTkLabel(self.docker_control_frame, text="Enter Docker Image Name:")
@@ -562,7 +558,8 @@ class DesktopApplication(ctk.CTk):
         self.build_image_name_entry.grid(row=4, column=12, padx=10, pady=10, sticky='w')
 
         self.build_button = ctk.CTkButton(self.docker_control_frame, text="Build Image",
-                                          command=self.build_docker_image)
+                                          command=self.build_docker_image,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4")
         self.build_button.grid(row=4, column=13, padx=10, pady=10)
 
         # Pull Docker Image Section
@@ -572,7 +569,8 @@ class DesktopApplication(ctk.CTk):
         self.pull_image_entry = ctk.CTkEntry(self.docker_control_frame, width=200)
         self.pull_image_entry.grid(row=5, column=12, padx=10, pady=10, sticky='w')
 
-        self.pull_button = ctk.CTkButton(self.docker_control_frame, text="Pull Image", command=self.pull_docker_image)
+        self.pull_button = ctk.CTkButton(self.docker_control_frame, text="Pull Image", command=self.pull_docker_image,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4")
         self.pull_button.grid(row=5, column=13, padx=10, pady=10)
 
         # Search Local Image Section
@@ -583,7 +581,8 @@ class DesktopApplication(ctk.CTk):
         self.local_search_entry.grid(row=6, column=12, padx=10, pady=10, sticky='w')
 
         self.local_search_button = ctk.CTkButton(self.docker_control_frame, text="Search Local Image",
-                                                 command=self.search_local_image)
+                                                 command=self.search_local_image,bg_color="transparent", hover_color='#26C6DA',
+          corner_radius=20, border_width=2, border_color="#00BCD4")
         self.local_search_button.grid(row=6, column=13, padx=10, pady=10)
 
         # Add return button
