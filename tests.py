@@ -3,7 +3,10 @@ from unittest.mock import patch, MagicMock
 import json
 import requests
 import os
-
+import tkinter.messagebox as messagebox
+import unittest
+from unittest.mock import patch, mock_open, MagicMock
+import tkinter.messagebox as tk_messagebox
 from app import DesktopApplication
 
 
@@ -193,6 +196,138 @@ class TestVMCreation(unittest.TestCase):
         mock_msgbox.assert_called_once()
         args, _ = mock_msgbox.call_args
         self.assertIn("Please enter valid numeric values", args[1])
+
+
+class TestDockerfileCreation(unittest.TestCase):
+    def setUp(self):
+        """
+        Setup runs before each test. We instantiate the application
+        and hide the UI to avoid popping up windows.
+        """
+        self.app = DesktopApplication()
+        self.app.withdraw()
+
+        # Set default values for test
+        self.app.base_image_entry = MagicMock()
+        self.app.commands_text = MagicMock()
+        self.app.env_vars_text = MagicMock()
+        self.app.ports_entry = MagicMock()
+        self.app.dockerfile_path_var = MagicMock()
+
+    def tearDown(self):
+        """
+        Cleanup after each test.
+        """
+        self.app.destroy()
+
+    @patch("builtins.open", new_callable=MagicMock)
+    @patch("tkinter.messagebox.showinfo")
+
+    def create_dockerfile(self):
+        # Get inputs from the UI
+        save_path = self.dockerfile_path_var.get()
+        base_image = self.base_image_entry.get().strip()
+        commands = self.commands_text.get("1.0", "end").strip()
+        env_vars = self.env_vars_text.get("1.0", "end").strip()
+        ports = self.ports_entry.get().strip()
+
+        # Validate inputs
+        if not save_path:
+            messagebox.showerror("Error", "Please specify a path to save the Dockerfile.")
+            return
+        if not base_image:
+            messagebox.showerror("Error", "Base image is required.")
+            return
+
+        # Construct Dockerfile content
+        dockerfile_content = f"FROM {base_image}\n"
+
+        if env_vars:
+            for line in env_vars.splitlines():
+                dockerfile_content += f"ENV {line}\n"
+
+        if commands:
+            for line in commands.splitlines():
+                dockerfile_content += f"RUN {line}\n"
+
+        if ports:
+            for port in ports.split(","):
+                if port.strip().isdigit():
+                    dockerfile_content += f"EXPOSE {port.strip()}\n"
+
+        # Write to the file
+        try:
+            with open(save_path, "w") as f:
+                f.write(dockerfile_content)
+            messagebox.showinfo("Success", f"Dockerfile created at {save_path}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to create Dockerfile: {e}")
+
+    @patch("builtins.open", new_callable=mock_open)
+    @patch("tkinter.messagebox.showinfo")
+    def test_create_dockerfile_success(self, mock_showinfo, mock_open_file):
+        """
+        Test creating a Dockerfile with valid inputs and successful file write.
+        """
+        # Mock inputs
+        self.app.dockerfile_path_var.get.return_value = "/mock/path/Dockerfile"
+        self.app.base_image_entry.get.return_value = "python:3.9-slim"
+        self.app.commands_text.get.return_value = "pip install flask\npython app.py"
+        self.app.env_vars_text.get.return_value = "APP_ENV=production\nDEBUG=False"
+        self.app.ports_entry.get.return_value = "5000,8000"
+
+        # Call the method
+        self.app.create_dockerfile()
+
+        # Verify the file was written
+        mock_open_file.assert_called_once_with("/mock/path/Dockerfile", "w")
+        handle = mock_open_file()
+        handle.write.assert_called_once_with(
+            "FROM python:3.9-slim\n"
+            "ENV APP_ENV=production\n"
+            "ENV DEBUG=False\n"
+            "RUN pip install flask\n"
+            "RUN python app.py\n"
+            "EXPOSE 5000\n"
+            "EXPOSE 8000\n"
+        )
+
+        # Verify success message
+        mock_showinfo.assert_called_once_with("Success", "Dockerfile created at /mock/path/Dockerfile")
+
+
+    @patch("tkinter.messagebox.showerror")
+    def test_create_dockerfile_missing_path(self, mock_showerror):
+        """
+        Test behavior when no save path is specified for the Dockerfile.
+        """
+        # Mock inputs
+        self.app.dockerfile_path_var.get.return_value = ""
+
+        # Call the method
+        self.app.create_dockerfile()
+
+        # Assert error message
+        mock_showerror.assert_called_once_with("Error", "Please specify a path to save the Dockerfile.")
+
+    @patch("builtins.open", side_effect=OSError("Simulated file write error"))
+    @patch("tkinter.messagebox.showerror")
+    def test_create_dockerfile_file_write_error(self, mock_showerror, mock_open_file):
+        """
+        Test behavior when a file write error occurs.
+        """
+        # Mock inputs
+        self.app.dockerfile_path_var.get.return_value = "/mock/path/Dockerfile"
+        self.app.base_image_entry.get.return_value = "python:3.9-slim"
+        self.app.commands_text.get.return_value = ""
+        self.app.env_vars_text.get.return_value = ""
+        self.app.ports_entry.get.return_value = ""
+
+        # Call the method
+        self.app.create_dockerfile()
+
+        # Assert error message
+        mock_showerror.assert_called_once_with("Error", "Failed to create Dockerfile: Simulated file write error")
 
 if __name__ == "__main__":
     unittest.main()
