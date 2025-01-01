@@ -29,115 +29,106 @@ class DesktopApplication(ctk.CTk):
         self.docker_image_name_var = ctk.StringVar()
 
 
-        self.create_main_interface()
+        self.homepage()
+    def add_return_button(self, frame):
+        """Add a button to return to the homepage"""
+        return_btn = ctk.CTkButton(frame, text="Return to Homepage", command=self.return_to_homepage)
+        return_btn.pack(pady=10)
 
-    def create_main_interface(self):
-        """Create the main interface with consistent layout"""
-        # Left-side option frame with fixed width
-        self.option_frame = ctk.CTkFrame(self, 
-                                         width=200,  # Increased width for consistency
-                                         height=800,  
-                                         fg_color=self.GREEN_DARK,
-                                         corner_radius=10)
-        self.option_frame.pack(side=ctk.LEFT, fill=ctk.Y, padx=10, pady=10)
-        self.option_frame.pack_propagate(False)  # Prevent frame from resizing
-
-        # Create buttons for different sections with consistent styling
+    def return_to_homepage(self):
+        """Return to the homepage"""
+        if self.vm_frame:
+            self.vm_frame.pack_forget()
+        if self.homepage_frame:
+            self.homepage_frame.pack(expand=True, fill=ctk.BOTH)
+        
+    def homepage(self):
+        """Display the homepage with Application Features"""
+        # Create homepage frame
+        self.homepage_frame = ctk.CTkFrame(self, bg_color=self.GREEN_LIGHT, fg_color=self.GREEN_LIGHT)
+        self.homepage_frame.pack(expand=True, fill=BOTH, padx=20, pady=20)
+        
+        self.hompage_label = ctk.CTkLabel(self.homepage_frame, text="Cloud Management System", 
+                                          font=('Helvetica', 20, 'bold'))
+        self.hompage_label.pack(pady=10)
+        
+        # Create buttons for different sections
         sections = [
             ("Virtual Machines", self.show_vm_section),
             ("Docker Files", self.show_docker_files_section),
             ("Docker Hub", self.display_docker_hub_section),
             ("Manage Containers", self.show_containers_section),
             ("Docker Control Panel", self.docker_control_panel)
-
         ]
 
         for text, command in sections:
-            btn = ctk.CTkButton(self.option_frame, 
+            btn = ctk.CTkButton(self.homepage_frame, 
                                 text=text, 
                                 command=command,
-                                width=180,  # Consistent button width
-                                height=40)  # Consistent button height
+                                width=400,
+                                height=50)
             btn.pack(pady=10)
 
-        # Right-side main content frame with fixed width
-        self.main_frame = ctk.CTkFrame(self, 
-                                       fg_color=self.GREEN_LIGHT, 
-                                       width=950,  # Calculated width
-                                       height=800)
-        self.main_frame.pack(side=tk.RIGHT, padx=10, pady=10)
-        self.main_frame.pack_propagate(False)  # Prevent frame from resizing
-
-        # Initially show VM section
-        self.show_vm_section()
     def show_vm_section(self):
         """Display Virtual Machine configuration section"""
-        # Clear previous content
-        for widget in self.main_frame.winfo_children():
-            widget.destroy()
+        # Hide the homepage
+        if self.homepage_frame:
+            self.homepage_frame.pack_forget()
 
         # VM Configuration Frame
-        vm_frame = ctk.CTkFrame(self.main_frame, bg_color='#4CB572', fg_color='#4CB572')
-        vm_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
-
+        self.vm_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
+        self.vm_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
         # Title
-        title_label = ctk.CTkLabel(vm_frame, text="Virtual Machine Configuration", 
-                                font=('Helvetica', 16, 'bold'))
+        title_label = ctk.CTkLabel(self.vm_frame, text="Virtual Machine Configuration", 
+                                   font=('Helvetica', 16, 'bold'))
         title_label.pack(pady=10)
 
         # Configuration Inputs
-        config_frame = ctk.CTkFrame(vm_frame, bg_color='#4CB572', fg_color='#4CB572')
+        config_frame = ctk.CTkFrame(self.vm_frame, bg_color='#4CB572', fg_color='#4CB572')
         config_frame.pack(expand=True)
 
         # CPU Configuration
-        cpu_label = ctk.CTkLabel(config_frame, text="Number of CPUs:",font=('Helvetica', 16, 'bold'))
+        cpu_label = ctk.CTkLabel(config_frame, text="Number of CPUs:", font=('Helvetica', 16, 'bold'))
         cpu_label.grid(row=0, column=0, padx=5, pady=5, sticky='e')
         cpu_entry = ctk.CTkEntry(config_frame, textvariable=self.cpu_var, width=120)
-        cpu_entry.grid(row=0, column=2, padx=5, pady=5,sticky='w')
+        cpu_entry.grid(row=0, column=2, padx=5, pady=5, sticky='w')
 
         # Memory Configuration
-        memory_label = ctk.CTkLabel(config_frame, text="Memory (MB):",font=('Helvetica', 16, 'bold'))
+        memory_label = ctk.CTkLabel(config_frame, text="Memory (MB):", font=('Helvetica', 16, 'bold'))
         memory_label.grid(row=1, column=0, padx=5, pady=5, sticky='e')
         memory_entry = ctk.CTkEntry(config_frame, textvariable=self.memory_var, width=120)
-        memory_entry.grid(row=1, column=2, padx=5, pady=5,sticky='w')
+        memory_entry.grid(row=1, column=2, padx=5, pady=5, sticky='w')
 
         # Disk Image Configuration
-        disk_label =ctk.CTkLabel(config_frame, text="Disk Image Path:", font=('Helvetica', 16, 'bold'))
+        disk_label = ctk.CTkLabel(config_frame, text="Disk Image Path:", font=('Helvetica', 16, 'bold'))
         disk_label.grid(row=2, column=0, padx=5, pady=5, sticky='e')
         disk_entry = ctk.CTkEntry(config_frame, textvariable=self.disk_var, width=120)
-        disk_entry.grid(row=2, column=2, padx=5, pady=5,sticky='w')
+        disk_entry.grid(row=2, column=2, padx=5, pady=5, sticky='w')
         
         # Browse Disk Button
         browse_btn = ctk.CTkButton(config_frame, text="Browse", command=self.browse_disk,
-                                   bg_color='#135E4B',fg_color='#135E4B',hover_color='#A1D8B5',
-                                   background_corner_colors=(['#135E4B','#135E4B','#135E4B','#135E4B']),
-                                   corner_radius=30,width=70)
+                                   bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
+                                   corner_radius=30, width=70)
         browse_btn.grid(row=4, column=2, padx=5, pady=5)
 
         # Create VM Button
-        create_vm_btn = ctk.CTkButton(vm_frame, text="Create Virtual Machine", 
-                                  command=self.create_vm,bg_color='#135E4B',fg_color='#135E4B',hover_color='#A1D8B5',
-                                   background_corner_colors=(['#135E4B','#135E4B','#135E4B','#135E4B']),
-                                   corner_radius=30)
+        create_vm_btn = ctk.CTkButton(self.vm_frame, text="Create Virtual Machine", 
+                                      command=self.create_vm, bg_color='#135E4B', 
+                                      fg_color='#135E4B', hover_color='#A1D8B5',
+                                      corner_radius=30)
         create_vm_btn.pack(pady=10)
-
-        # VM List Frame
-        list_frame = ctk.CTkFrame(vm_frame, bg_color='#4CB572', fg_color='#4CB572')
-        list_frame.pack(expand=True, fill=ctk.BOTH, padx=10, pady=10)
-
-        # VM List Label
-        list_label = ctk.CTkLabel(list_frame, text="Existing Virtual Machines")
-        list_label.pack()
-
-        self.vm_listbox = ctk.CTkTextbox(list_frame, width=500, height=200)
-        self.vm_listbox.pack(expand=True, fill=ctk.BOTH)
-
-        # Refresh VM List Button
-        refresh_btn = ctk.CTkButton(vm_frame, text="Refresh VM List", command=self.list_vms,bg_color='#135E4B',fg_color='#135E4B',hover_color='#A1D8B5',
-                                   background_corner_colors=(['#135E4B','#135E4B','#135E4B','#135E4B']),
-                                   corner_radius=30)
-        refresh_btn.pack(pady=5)
-
+        # List VMs Button
+        list_vms_btn = ctk.CTkButton(self.vm_frame, text="List Virtual Machines", 
+                                    command=self.list_vms, bg_color='#135E4B', 
+                                    fg_color='#135E4B', hover_color='#A1D8B5',
+                                    corner_radius=30)
+        list_vms_btn.pack(pady=10)
+        vm_listbox=ctk.CTkTextbox(self.vm_frame, width=300, height=200)
+        vm_listbox.pack(expand=True, fill=ctk.BOTH, padx=10, pady=10)
+        
+                
+        # Add return button
+        self.add_return_button(self.vm_frame)
     def browse_disk(self):
         """Open file dialog to select disk image"""
         file_path = filedialog.askopenfilename(
@@ -218,7 +209,7 @@ class DesktopApplication(ctk.CTk):
     def show_docker_files_section(self):
             """Display Docker Files section"""
             # Clear previous content
-            for widget in self.main_frame.winfo_children():
+            for widget in self.homepage_frame.winfo_children():
                 widget.destroy()
 
             # Docker Files Frame
@@ -320,7 +311,7 @@ class DesktopApplication(ctk.CTk):
     def display_docker_hub_section(self):
         """Display Docker Hub section"""
         # Clear previous content
-        for widget in self.main_frame.winfo_children():
+        for widget in self.homepage_frame.winfo_children():
             widget.destroy()
 
         # Docker Hub Frame
@@ -378,7 +369,7 @@ class DesktopApplication(ctk.CTk):
     def show_containers_section(self):
         """Display Containers Management section"""
         # Clear previous content
-        for widget in self.main_frame.winfo_children():
+        for widget in self.homepage_frame.winfo_children():
             widget.destroy()
 
         # Containers Frame
@@ -468,7 +459,7 @@ class DesktopApplication(ctk.CTk):
     def docker_control_panel(self):
             """Set up the Docker control panel layout"""
             # Clear previous content if any
-            for widget in self.main_frame.winfo_children():
+            for widget in self.homepage_frame.winfo_children():
                 widget.destroy()
 
             # Docker control frame for containers
