@@ -375,6 +375,8 @@ class DesktopApplication(ctk.CTk):
                 self.docker_hub_listbox.insert("end", f"Container: {container_name} | Repository: {repo_name} | Stars: {stars}\n")
         except Exception as e:
             messagebox.showerror("Error", f"Failed to search Docker Hub: {str(e)}")
+
+
     def show_containers_section(self):
         """Display Containers Management section"""
         # Clear previous content

@@ -1,0 +1,36 @@
+name: Python Tests
+
+on:
+  push:
+    branches:
+        - "main"
+  pull_request:
+    branches:
+        - "main"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repo
+      - uses: actions/checkout@v3
+
+      # 2. Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      # 3. Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # 4. Run unittests
+      - name: Run unittests
+        run: |
+          # discover all tests the project
+          python -m unittest discover -v
+
