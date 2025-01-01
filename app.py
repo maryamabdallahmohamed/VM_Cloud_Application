@@ -53,16 +53,6 @@ class DesktopApplication(ctk.CTk):
         
     def homepage(self):
         """Display the homepage with Application Features"""
-        #Remove any existing frames
-        if hasattr(self, 'vm_frame'):
-            self.vm_frame.destroy()
-        if hasattr(self, 'docker_frame'):
-            self.docker_frame.destroy()
-        if hasattr(self, 'containers_frame'):
-            self.containers_frame.destroy()
-        if hasattr(self, 'docker_control_frame'):
-            self.docker_control_frame.destroy()
-        
         # Create homepage frame
         self.homepage_frame = ctk.CTkFrame(self, bg_color=self.GREEN_LIGHT, fg_color=self.GREEN_LIGHT)
         self.homepage_frame.pack(expand=True, fill=BOTH, padx=20, pady=20)
@@ -338,47 +328,52 @@ class DesktopApplication(ctk.CTk):
         except Exception as e:
             ctk.messagebox.showerror("Error", f"Failed to create Dockerfile: {str(e)}")
 
-
-
     def display_docker_hub_section(self):
         """Display Docker Hub section"""
         # Clear previous content
         if self.homepage_frame:
-            self.homepage_frame.pack_forget()
+            self.homepage_frame.destroy()
 
         # Docker Hub Frame
-        hub_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
-        hub_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
+        self.hub_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
+        self.hub_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
 
         # Search Frame
-        search_frame = ctk.CTkFrame(hub_frame, bg_color='#4CB572', fg_color='#4CB572')
-        search_frame.grid(row=0, column=0, padx=10, pady=10)
+        search_frame = ctk.CTkFrame(self.hub_frame, bg_color='#4CB572', fg_color='#4CB572')
+        search_frame.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
 
         # Search Entry
         search_label = ctk.CTkLabel(search_frame, text="Search Docker Hub:")
-        search_label.grid(row=0, column=0, padx=5, pady=5)
+        search_label.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+
         search_entry = ctk.CTkEntry(search_frame, width=300)
-        search_entry.grid(row=0, column=1, padx=5, pady=5)
+        search_entry.grid(row=0, column=1, padx=5, pady=5, sticky='ew')
 
         # Search Button
         search_btn = ctk.CTkButton(
             search_frame,
             text="Search",
             command=lambda: self.search_docker_hub(search_entry.get()),
-            bg_color='#135E4B',
             fg_color='#135E4B',
             hover_color='#A1D8B5',
             corner_radius=30,
-            width=70
+            width=100
         )
-        search_btn.grid(row=0, column=2, padx=5, pady=5)
-        
+        search_btn.grid(row=0, column=2)
+
+        # Configure grid weights for `search_frame`
+        search_frame.grid_columnconfigure(1, weight=1)  # Allow search entry to expand
 
         # Results Textbox
-        self.docker_hub_listbox = ctk.CTkTextbox(hub_frame, width=300, height=200)
-        self.docker_hub_listbox.grid(row=1, column=0, padx=10, pady=10)
+        self.docker_hub_listbox = ctk.CTkTextbox(self.hub_frame, width=400, height=100)
+        self.docker_hub_listbox.grid(row=1, column=0, padx=10, pady=10, sticky='nsew')
+
+        # Configure grid weights for `hub_frame`
+        self.hub_frame.grid_rowconfigure(1, weight=1)  # Results textbox expands vertically
+        self.hub_frame.grid_columnconfigure(0, weight=1)  # Results textbox expands horizontally
+
         # Add return button
-        self.add_return_button(hub_frame)
+        self.add_return_button(self.hub_frame, r=2,c=0)
 
     def search_docker_hub(self, query):
         """Search Docker Hub for images"""
@@ -403,7 +398,7 @@ class DesktopApplication(ctk.CTk):
             messagebox.showerror("Error", f"Failed to search Docker Hub: {str(e)}")
     def show_containers_section(self):
         """Display Containers Management section"""
-            #Remove homepage frame
+        # Remove homepage frame
         if self.homepage_frame:
             self.homepage_frame.destroy()
 
@@ -411,48 +406,53 @@ class DesktopApplication(ctk.CTk):
         self.containers_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
         self.containers_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
 
+        # Frame Label
+        title_label = ctk.CTkLabel(self.containers_frame, text="Docker Containers Management", font=('Helvetica', 16, 'bold'))
+        title_label.grid(row=0, column=0, columnspan=2, padx=20, pady=10, sticky='n')
+
         # Buttons Frame
-        btn_frame = ctk.CTkFrame(self.containers_frame,  bg_color='#4CB572', fg_color='#4CB572')
-        btn_frame.grid(row=0, column=0, padx=10, pady=10)
+        btn_frame = ctk.CTkFrame(self.containers_frame, bg_color='#4CB572', fg_color='#4CB572')
+        btn_frame.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky='w')
 
         # List Images Button
         list_images_btn = ctk.CTkButton(btn_frame, text="List Docker Images", 
                                         command=self.list_docker_images,
-                                        bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
-                                        background_corner_colors=(['#135E4B', '#135E4B', '#135E4B', '#135E4B']),
-                                        corner_radius=30, width=70)
-        list_images_btn.grid(row=0, column=0, padx=5)
+                                        fg_color='#135E4B', hover_color='#A1D8B5',
+                                        corner_radius=30, width=150)
+        list_images_btn.grid(row=0, column=0, padx=10, pady=5)
 
         # List Containers Button
         list_containers_btn = ctk.CTkButton(btn_frame, text="List Docker Containers", 
                                             command=self.list_docker_containers,
-                                            bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
-                                            background_corner_colors=(['#135E4B', '#135E4B', '#135E4B', '#135E4B']),
-                                            corner_radius=30, width=70)
-        list_containers_btn.grid(row=0, column=1, padx=5)
+                                            fg_color='#135E4B', hover_color='#A1D8B5',
+                                            corner_radius=30, width=150)
+        list_containers_btn.grid(row=0, column=1, padx=10, pady=5)
 
         # Listboxes Frame
-        list_frame = ctk.CTkFrame(self.containers_frame)
-        list_frame.grid(row=1, column=0, padx=10, pady=10)
+        list_frame = ctk.CTkFrame(self.containers_frame, bg_color='#4CB572', fg_color='#4CB572')
+        list_frame.grid(row=2, column=0, columnspan=2, padx=10, pady=10, sticky='nsew')
 
         # Images Label and Listbox
         images_label = ctk.CTkLabel(list_frame, text="Docker Images:")
-        images_label.grid(row=0, column=0, padx=5, pady=5)
-        self.images_listbox = ctk.CTkTextbox(list_frame, width=70, height=10)
+        images_label.grid(row=0, column=0, padx=5, pady=5, sticky='w')
+
+        self.images_listbox = ctk.CTkTextbox(list_frame, width=200, height=100)
         self.images_listbox.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 
         # Containers Label and Listbox
         containers_label = ctk.CTkLabel(list_frame, text="Docker Containers:")
-        containers_label.grid(row=2, column=0, padx=5, pady=5)
-        self.containers_listbox = ctk.CTkTextbox(list_frame, width=70, height=10)
+        containers_label.grid(row=2, column=0, padx=5, pady=5, sticky='w')
+
+        self.containers_listbox = ctk.CTkTextbox(list_frame, width=200, height=100)
         self.containers_listbox.grid(row=3, column=0, padx=5, pady=5, sticky="nsew")
-        
+
         # Make the list_frame grid expand properly
         list_frame.grid_rowconfigure(1, weight=1)
         list_frame.grid_rowconfigure(3, weight=1)
         list_frame.grid_columnconfigure(0, weight=1)
+
         # Add return button
-        self.add_return_button(self.containers_frame)
+        self.add_return_button(self.containers_frame, r=3, c=0)
 
     def list_docker_images(self):
         """List all Docker images on the system"""
