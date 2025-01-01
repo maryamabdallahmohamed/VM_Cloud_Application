@@ -48,10 +48,7 @@ class DesktopApplication(ctk.CTk):
             ("Docker Files", self.show_docker_files_section),
             ("Docker Hub", self.show_docker_hub_section),
             ("Manage Containers", self.show_containers_section),
-            ("Build Docker Image", self.build_docker_image),
-            ("Stop Container", self.stop_docker_container),
-            ("Search Image", self.search_local_image),
-            ("Pull Docker Image", self.pull_docker_image),
+            ("Docker Control Panel", self.docker_control_panel)
 
         ]
 
@@ -413,25 +410,81 @@ class DesktopApplication(ctk.CTk):
             messagebox.showerror("Error", f"Failed to list Docker images: {str(e)}")
         except FileNotFoundError:
             messagebox.showerror("Error", "Docker is not installed or not in PATH.")
+        
+    def docker_control_panel(self):
+            """Set up the Docker control panel layout"""
+            # Clear previous content if any
+            for widget in self.main_frame.winfo_children():
+                widget.destroy()
 
+            # Docker control frame for containers
+            self.docker_control_frame = ctk.CTkFrame(self.main_frame,bg_color='#4CB572', fg_color='#4CB572')
+            self.docker_control_frame.pack(pady=10, fill='x')
+
+            # Feature 1: Stop container
+            self.stop_container_label = ctk.CTkLabel(self.docker_control_frame, text="Container ID/Name:")
+            self.stop_container_label.pack(anchor='w', padx=10, pady=5)
+
+            self.stop_container_entry = ctk.CTkEntry(self.docker_control_frame, width=100)
+            self.stop_container_entry.pack(anchor='w', padx=10, pady=5)
+
+            self.stop_button = ctk.CTkButton(self.docker_control_frame, text="Stop Selected Container", command=self.stop_selected_container)
+            self.stop_button.pack(anchor='w', padx=10, pady=5)
+
+            # Feature 2: Refresh container list
+            self.refresh_button = ctk.CTkButton(self.docker_control_frame, text="Refresh Container List", command=self.list_docker_containers)
+            self.refresh_button.pack(anchor='w', padx=10, pady=5)
+
+            # Feature 3: Search for Image
+            self.search_image_label = ctk.CTkLabel(self.docker_control_frame, text="Image Name:")
+            self.search_image_label.pack(anchor='w', padx=10, pady=5)
+
+            self.search_entry = ctk.CTkEntry(self.docker_control_frame, width=100)
+            self.search_entry.pack(anchor='w', padx=10, pady=5)
+
+            self.download_button = ctk.CTkButton(self.docker_control_frame, text="Download Image", command=self.download_image)
+            self.download_button.pack(anchor='w', padx=10, pady=5)
+
+            # Feature 4: Build Docker Image
+            self.build_image_label = ctk.CTkLabel(self.docker_control_frame, text="Dockerfile Path:")
+            self.build_image_label.pack(anchor='w', padx=10, pady=5)
+
+            self.build_image_entry = ctk.CTkEntry(self.docker_control_frame, width=100)
+            self.build_image_entry.pack(anchor='w', padx=10, pady=5)
+
+            self.build_button = ctk.CTkButton(self.docker_control_frame, text="Build Image", command=self.build_docker_image)
+            self.build_button.pack(anchor='w', padx=10, pady=5)
+
+            # Feature 5: Pull Docker Image
+            self.pull_image_label = ctk.CTkLabel(self.docker_control_frame, text="Pull Image Name:")
+            self.pull_image_label.pack(anchor='w', padx=10, pady=5)
+
+            self.pull_image_entry = ctk.CTkEntry(self.docker_control_frame, width=100)
+            self.pull_image_entry.pack(anchor='w', padx=10, pady=5)
+
+            self.pull_button = ctk.CTkButton(self.docker_control_frame, text="Pull Image", command=self.pull_docker_image)
+            self.pull_button.pack(anchor='w', padx=10, pady=5)
+
+            # Feature 6: Search Local Image
+            self.local_search_label = ctk.CTkLabel(self.docker_control_frame, text="Search Local Image:")
+            self.local_search_label.pack(anchor='w', padx=10, pady=5)
+
+            self.local_search_entry = ctk.CTkEntry(self.docker_control_frame, width=100)
+            self.local_search_entry.pack(anchor='w', padx=10, pady=5)
+
+            self.local_search_button = ctk.CTkButton(self.docker_control_frame, text="Search Local Image", command=self.search_local_image)
+            self.local_search_button.pack(anchor='w', padx=10, pady=5)
     def list_docker_containers(self):
-        """List all Docker containers on the system"""
-        self.containers_listbox.delete(0, tk.END)
+        """List Docker containers in the listbox."""
         try:
             result = subprocess.run(["docker", "ps", "-a"], capture_output=True, text=True, check=True)
-            output = result.stdout.strip().split('\n')
-            
-            for line in output[1:]:  # Skip header
-                columns = line.split()
-                if columns:
-                    self.containers_listbox.insert(ctk.END, f"{columns[0]} - {columns[-1]}")
-            
-            messagebox.showinfo("Success", "Docker containers listed successfully!")
+            containers = result.stdout.splitlines()
+            self.containers_listbox.delete(0, tk.END)
+            for container in containers[1:]:  # Skip the header
+                self.containers_listbox.insert(tk.END, container)
         except subprocess.CalledProcessError as e:
-            messagebox.showerror("Error", f"Failed to list Docker containers: {str(e)}")
-        except FileNotFoundError:
-            messagebox.showerror("Error", "Docker is not installed or not in PATH.")
-
+            messagebox.showerror("Error", f"Failed to list containers: {str(e)}")
+    
     def stop_selected_container(self):
         """Stop the selected Docker container"""
         try:
@@ -492,6 +545,7 @@ class DesktopApplication(ctk.CTk):
             messagebox.showinfo("Success", f"Docker image built successfully:\n{result.stdout}")
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Error", f"Failed to build Docker image:\n{e.stderr}")
+
     def stop_docker_container(self):
         """Stop a specific Docker container."""
         container_id = simpledialog.askstring("Container ID", "Enter the Container ID or Name to stop:")
@@ -533,7 +587,6 @@ class DesktopApplication(ctk.CTk):
             messagebox.showinfo("Success", f"Image pulled successfully:\n{result.stdout}")
         except subprocess.CalledProcessError as e:
             messagebox.showerror("Error", f"Failed to pull image:\n{e.stderr}")
-
 
 if __name__ == "__main__":
     app = DesktopApplication()
