@@ -31,7 +31,7 @@ class DesktopApplication(ctk.CTk):
 
         self.homepage()
 
-    def add_return_button(self, frame):
+    def add_return_button(self, frame,r,c):
         """Add a button to return to the homepage"""
         return_btn = ctk.CTkButton(
             frame, 
@@ -42,7 +42,7 @@ class DesktopApplication(ctk.CTk):
             hover_color='#A1D8B5',
             corner_radius=30
         )
-        return_btn.grid(row=5, column=0, padx=10, pady=10)
+        return_btn.grid(row=r, column=c, padx=10, pady=10)
 
     def return_to_homepage(self, frame):
         """Return to the homepage"""
@@ -77,7 +77,7 @@ class DesktopApplication(ctk.CTk):
                                 width=400,
                                 height=50)
             btn.pack(pady=10)
-
+                
     def show_vm_section(self):
         """Display Virtual Machine configuration section"""
         # Hide the homepage
@@ -86,58 +86,66 @@ class DesktopApplication(ctk.CTk):
 
         # VM Configuration Frame
         self.vm_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
-        self.vm_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
+        self.vm_frame.pack(expand=True, fill=ctk.BOTH, padx=40, pady=40)
+
         # Title
         title_label = ctk.CTkLabel(self.vm_frame, text="Virtual Machine Configuration", 
-                                   font=('Helvetica', 16, 'bold'))
-        title_label.grid(row=0, column=0, padx=10, pady=10)
+                                font=('Helvetica', 20, 'bold'), anchor='center')
+        title_label.grid(row=0, column=10, columnspan=3, padx=20, pady=20, sticky='nsew')
 
-        # Configuration Inputs
+        # Configuration Inputs Frame
         config_frame = ctk.CTkFrame(self.vm_frame, bg_color='#4CB572', fg_color='#4CB572')
-        config_frame.grid(row=1, column=0, padx=10, pady=10)
+        config_frame.grid(row=1, column=10, padx=20, pady=20, sticky='nsew')
 
         # CPU Configuration
         cpu_label = ctk.CTkLabel(config_frame, text="Number of CPUs:", font=('Helvetica', 16, 'bold'))
-        cpu_label.grid(row=0, column=0, padx=5, pady=5, sticky='e')
-        cpu_entry = ctk.CTkEntry(config_frame, textvariable=self.cpu_var, width=120)
-        cpu_entry.grid(row=0, column=2, padx=5, pady=5, sticky='w')
+        cpu_label.grid(row=0, column=0, padx=10, pady=10, sticky='e')
+        cpu_entry = ctk.CTkEntry(config_frame, textvariable=self.cpu_var, width=160)
+        cpu_entry.grid(row=0, column=1, padx=10, pady=10, sticky='w')
 
         # Memory Configuration
         memory_label = ctk.CTkLabel(config_frame, text="Memory (MB):", font=('Helvetica', 16, 'bold'))
-        memory_label.grid(row=1, column=0, padx=5, pady=5, sticky='e')
-        memory_entry = ctk.CTkEntry(config_frame, textvariable=self.memory_var, width=120)
-        memory_entry.grid(row=1, column=2, padx=5, pady=5, sticky='w')
+        memory_label.grid(row=1, column=0, padx=10, pady=10, sticky='e')
+        memory_entry = ctk.CTkEntry(config_frame, textvariable=self.memory_var, width=160)
+        memory_entry.grid(row=1, column=1, padx=10, pady=10, sticky='w')
 
-        # Disk Image Configuration
+        # Disk Image Configurationb
         disk_label = ctk.CTkLabel(config_frame, text="Disk Image Path:", font=('Helvetica', 16, 'bold'))
-        disk_label.grid(row=2, column=0, padx=5, pady=5, sticky='e')
-        disk_entry = ctk.CTkEntry(config_frame, textvariable=self.disk_var, width=120)
-        disk_entry.grid(row=2, column=2, padx=5, pady=5, sticky='w')
-        
+        disk_label.grid(row=2, column=0, padx=10, pady=10, sticky='e')
+        disk_entry = ctk.CTkEntry(config_frame, textvariable=self.disk_var, width=160)
+        disk_entry.grid(row=2, column=1, padx=10, pady=10, sticky='w')
+
         # Browse Disk Button
         browse_btn = ctk.CTkButton(config_frame, text="Browse", command=self.browse_disk,
-                                   bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
-                                   corner_radius=30, width=70)
-        browse_btn.grid(row=4, column=2, padx=5, pady=5)
+                                bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
+                                corner_radius=30, width=100)
+        browse_btn.grid(row=3, column=1, padx=10, pady=10, sticky='w')
+
+        # Action Buttons Frame (for Create and List VM buttons)
+        action_frame = ctk.CTkFrame(self.vm_frame, bg_color='#4CB572', fg_color='#4CB572')
+        action_frame.grid(row=2, column=10, columnspan=3, padx=20, pady=20, sticky='nsew')
 
         # Create VM Button
-        create_vm_btn = ctk.CTkButton(self.vm_frame, text="Create Virtual Machine", 
-                                      command=self.create_vm, bg_color='#135E4B', 
-                                      fg_color='#135E4B', hover_color='#A1D8B5',
-                                      corner_radius=30)
-        create_vm_btn.grid(row=2, column=0, padx=10, pady=10)
+        create_vm_btn = ctk.CTkButton(action_frame, text="Create Virtual Machine", 
+                                    command=self.create_vm, bg_color='#135E4B', 
+                                    fg_color='#135E4B', hover_color='#A1D8B5',
+                                    corner_radius=30, width=200)
+        create_vm_btn.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
+
         # List VMs Button
-        list_vms_btn = ctk.CTkButton(self.vm_frame, text="List Virtual Machines", 
+        list_vms_btn = ctk.CTkButton(action_frame, text="List Virtual Machines", 
                                     command=self.list_vms, bg_color='#135E4B', 
                                     fg_color='#135E4B', hover_color='#A1D8B5',
-                                    corner_radius=30)
-        list_vms_btn.grid(row=3, column=0, padx=10, pady=10)
-        vm_listbox=ctk.CTkTextbox(self.vm_frame, width=300, height=200)
-        vm_listbox.grid(row=4, column=0, padx=10, pady=10)
-        
-                
+                                    corner_radius=30, width=200)
+        list_vms_btn.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
+
+        # VM Listbox
+        vm_listbox = ctk.CTkTextbox(action_frame, width=400, height=100)
+        vm_listbox.grid(row=1, column=0, columnspan=2, padx=20, pady=20, sticky='nsew')
+
         # Add return button
-        self.add_return_button(self.vm_frame)
+        self.add_return_button(self.vm_frame,4,10)
+            
     def browse_disk(self):
         """Open file dialog to select disk image"""
         file_path = filedialog.askopenfilename(
@@ -215,66 +223,69 @@ class DesktopApplication(ctk.CTk):
             
             
                 
+
     def show_docker_files_section(self):
-            """Display Docker Files section"""
-            #Remove homepage frame
-            if self.homepage_frame:
-                self.homepage_frame.destroy()
-                
-            # Docker Files Frame
-            self.docker_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
-            self.docker_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
+        """Display Docker Files section"""
+        # Remove homepage frame
+        if self.homepage_frame:
+            self.homepage_frame.destroy()
 
-            # Title
-            title_label = ctk.CTkLabel(self.docker_frame, text="Docker Files Management",
-                                    font=('Helvetica', 16, 'bold'))
-            title_label.grid(row=0, column=0, padx=10, pady=10)
+        # Docker Files Frame
+        self.docker_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
+        self.docker_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20,anchor='center')
 
-            # Dockerfile Creation Section
-            create_frame = ctk.CTkFrame(self.docker_frame, bg_color='#4CB572', fg_color='#4CB572')
-            create_frame.grid(row=1, column=0, padx=10, pady=10)
+        # Title
+        title_label = ctk.CTkLabel(self.docker_frame, text="Docker Files Management", font=('Helvetica', 16, 'bold'))
+        title_label.grid(row=0, column=10, columnspan=3, padx=20, pady=10, sticky='nsew')
 
-            # Base Image Input
-            base_image_label = ctk.CTkLabel(create_frame, text="Base Image:")
-            base_image_label.grid(row=0, column=0, padx=5, pady=5, sticky='w')
-            self.base_image_entry = ctk.CTkEntry(create_frame, width=300)
-            self.base_image_entry.grid(row=0, column=1, padx=5, pady=5, sticky='w')
+        # Dockerfile Creation Section
+        create_frame = ctk.CTkFrame(self.docker_frame, bg_color='#4CB572', fg_color='#4CB572')
+        create_frame.grid(row=1, column=10, columnspan=3, padx=20, pady=20, sticky='nsew')
 
-            # Commands Input
-            commands_label = ctk.CTkLabel(create_frame, text="Commands (one per line):")
-            commands_label.grid(row=1, column=0, padx=5, pady=5, sticky='w')
-            self.commands_text = ctk.CTkTextbox(create_frame, height=100, width=300)
-            self.commands_text.grid(row=1, column=1, padx=5, pady=5, sticky='w')
+        # Base Image Input
+        base_image_label = ctk.CTkLabel(create_frame, text="Base Image:", font=('Helvetica', 14))
+        base_image_label.grid(row=0, column=10, padx=10, pady=10, sticky='w')
+        self.base_image_entry = ctk.CTkEntry(create_frame, width=300, font=('Helvetica', 12))
+        self.base_image_entry.grid(row=0, column=11, padx=10, pady=10, sticky='w')
 
-            # Environment Variables Input
-            env_vars_label = ctk.CTkLabel(create_frame, text="Environment Variables (KEY=VALUE, one per line):")
-            env_vars_label.grid(row=2, column=0, padx=5, pady=5, sticky='w')
-            self.env_vars_text = ctk.CTkTextbox(create_frame, height=60, width=300)
-            self.env_vars_text.grid(row=2, column=1, padx=5, pady=5, sticky='w')
+        # Commands Input
+        commands_label = ctk.CTkLabel(create_frame, text="Commands (one per line):", font=('Helvetica', 14))
+        commands_label.grid(row=1, column=10, padx=10, pady=10, sticky='w')
+        self.commands_text = ctk.CTkTextbox(create_frame, height=100, width=300, font=('Helvetica', 12))
+        self.commands_text.grid(row=1, column=11, padx=10, pady=10, sticky='w')
 
-            # Ports Input
-            ports_label = ctk.CTkLabel(create_frame, text="Exposed Ports (comma-separated):")
-            ports_label.grid(row=3, column=0, padx=5, pady=5, sticky='w')
-            self.ports_entry = ctk.CTkEntry(create_frame, width=300)
-            self.ports_entry.grid(row=3, column=1, padx=5, pady=5, sticky='w')
-            
-            # Dockerfile Path
-            path_label = ctk.CTkLabel(create_frame, text="Dockerfile Path:")
-            path_label.grid(row=4, column=0, padx=5, pady=5, sticky='w')
-            self.path_entry = ctk.CTkEntry(create_frame, textvariable=self.dockerfile_path_var, width=300)
-            self.path_entry.grid(row=4, column=1, padx=5, pady=5, sticky='w')
-            browse_btn = ctk.CTkButton(create_frame, text="Browse", command=self.set_dockerfile_path,
-                                    bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
-                                    corner_radius=30, width=70)
-            browse_btn.grid(row=4, column=2, padx=5, pady=5, sticky='w')
+        # Environment Variables Input
+        env_vars_label = ctk.CTkLabel(create_frame, text="Environment Variables (KEY=VALUE, one per line):", font=('Helvetica', 14))
+        env_vars_label.grid(row=2, column=10, padx=10, pady=10, sticky='w')
+        self.env_vars_text = ctk.CTkTextbox(create_frame, height=60, width=300, font=('Helvetica', 12))
+        self.env_vars_text.grid(row=2, column=11, padx=10, pady=10, sticky='w')
 
-            # Create Dockerfile Button
-            create_btn = ctk.CTkButton(self.docker_frame, text="Create Dockerfile", command=self.create_dockerfile,
-                                        bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
-                                        corner_radius=30, width=120)
-            create_btn.grid(row=2, column=0, padx=10, pady=10)
-            # Add return button
-            self.add_return_button(self.docker_frame)
+        # Ports Input
+        ports_label = ctk.CTkLabel(create_frame, text="Exposed Ports (comma-separated):", font=('Helvetica', 14))
+        ports_label.grid(row=3, column=10, padx=10, pady=10, sticky='w')
+        self.ports_entry = ctk.CTkEntry(create_frame, width=300, font=('Helvetica', 12))
+        self.ports_entry.grid(row=3, column=11, padx=10, pady=10, sticky='w')
+
+        # Dockerfile Path
+        path_label = ctk.CTkLabel(create_frame, text="Dockerfile Path:", font=('Helvetica', 14))
+        path_label.grid(row=4, column=10, padx=10, pady=10, sticky='w')
+        self.path_entry = ctk.CTkEntry(create_frame, textvariable=self.dockerfile_path_var, width=300, font=('Helvetica', 12))
+        self.path_entry.grid(row=4, column=11, padx=10, pady=10, sticky='w')
+        
+        browse_btn = ctk.CTkButton(create_frame, text="Browse", command=self.set_dockerfile_path,
+                                bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
+                                corner_radius=30, width=70, font=('Helvetica', 12))
+        browse_btn.grid(row=4, column=13, padx=10, pady=10, sticky='w')
+
+        # Create Dockerfile Button
+        create_btn = ctk.CTkButton(self.docker_frame, text="Create Dockerfile", command=self.create_dockerfile,
+                                bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
+                                corner_radius=30, width=120, font=('Helvetica', 14))
+        create_btn.grid(row=2, column=10, columnspan=3, padx=10, pady=20, sticky='nsew')
+
+
+        # Add return button
+        self.add_return_button(self.docker_frame,3,10)
             
     def set_dockerfile_path(self):
         """Set path for Dockerfile"""
