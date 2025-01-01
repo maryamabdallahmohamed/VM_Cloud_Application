@@ -1,0 +1,43 @@
+name: Python Tests
+
+on:
+  push:
+    branches:
+      - "main"
+      - "tests"
+  pull_request:
+    branches:
+      - "main"
+      - "tests"
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository
+      - uses: actions/checkout@v3
+
+      # 2. Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      # 3. Install OS-level dependencies (tkinter)
+      - name: Install OS-level dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-tk  # Installs tkinter
+
+      # 4. Install Python dependencies
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # 5. Set up Xvfb using a GitHub Action
+      - name: Setup Xvfb
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: python -m unittest discover -v
