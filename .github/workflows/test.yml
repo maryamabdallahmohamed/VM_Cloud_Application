@@ -40,4 +40,4 @@ jobs:
       - name: Setup Xvfb
         uses: GabrielBB/xvfb-action@v1
         with:
-          run_cmd: python -m unittest discover -v
+          run: python -m unittest discover -v
