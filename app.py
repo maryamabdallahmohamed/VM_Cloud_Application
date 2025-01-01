@@ -301,7 +301,7 @@ class DesktopApplication(ctk.CTk):
         """Create a new Dockerfile"""
         save_path = self.dockerfile_path_var.get()
         if not save_path:
-            ctk.messagebox.showerror("Error", "Please specify a path to save the Dockerfile.")
+            messagebox.showerror("Error", "Please specify a path to save the Dockerfile.")
             return
 
         # Gather inputs
@@ -328,9 +328,9 @@ class DesktopApplication(ctk.CTk):
         try:
             with open(save_path, "w") as f:
                 f.write(dockerfile_content)
-            ctk.messagebox.showinfo("Success", f"Dockerfile created at {save_path}")
+            messagebox.showinfo("Success", f"Dockerfile created at {save_path}")
         except Exception as e:
-            ctk.messagebox.showerror("Error", f"Failed to create Dockerfile: {str(e)}")
+            messagebox.showerror("Error", f"Failed to create Dockerfile: {str(e)}")
 
     def display_docker_hub_section(self):
         """Display Docker Hub section"""
