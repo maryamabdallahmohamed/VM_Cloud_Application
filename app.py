@@ -13,9 +13,9 @@ class DesktopApplication(ctk.CTk):
         super().__init__()
 
         # Set consistent color scheme
-        self.GREEN_DARK = '#135E4B'
-        self.GREEN_LIGHT = '#4CB572'
-        self.GREEN_HOVER = '#A1D8B5'
+        self.GREEN_DARK = '#00BCD4'
+        self.GREEN_LIGHT = '#121212'
+        self.GREEN_HOVER = '#26C6DA'
 
         # Configure window
         self.title("Cloud Management System")
@@ -39,9 +39,8 @@ class DesktopApplication(ctk.CTk):
             frame,
             text="Return to Homepage",
             command=lambda: self.return_to_homepage(frame),
-            bg_color='#135E4B',
-            fg_color='#135E4B',
-            hover_color='#A1D8B5',
+            bg_color='#00BCD4',
+            hover_color='#26C6DA',
             corner_radius=30
         )
         return_btn.grid(row=r, column=c, padx=10, pady=10)
@@ -76,8 +75,12 @@ class DesktopApplication(ctk.CTk):
                                 text=text,
                                 command=command,
                                 width=400,
-                                height=50)
-            btn.pack(pady=10)
+                                height=50,
+                                bg_color='#00BCD4',
+                                hover_color='#26C6DA',
+                                font=('Helvetica', 16),
+                                border_color='#00BCD4')
+            btn.pack(padx=10, pady=15)
 
     def show_vm_section(self):
         """Display Virtual Machine configuration section"""
@@ -86,7 +89,7 @@ class DesktopApplication(ctk.CTk):
             self.homepage_frame.pack_forget()
 
         # VM Configuration Frame
-        self.vm_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
+        self.vm_frame = ctk.CTkFrame(self, bg_color='#121212', fg_color='#121212')
         self.vm_frame.pack(expand=True, fill=ctk.BOTH, padx=40, pady=40)
 
         # Title
@@ -95,7 +98,7 @@ class DesktopApplication(ctk.CTk):
         title_label.grid(row=0, column=10, columnspan=3, padx=20, pady=20, sticky='nsew')
 
         # Configuration Inputs Frame
-        config_frame = ctk.CTkFrame(self.vm_frame, bg_color='#4CB572', fg_color='#4CB572')
+        config_frame = ctk.CTkFrame(self.vm_frame, bg_color='#121212', fg_color='#121212')
         config_frame.grid(row=1, column=10, padx=20, pady=20, sticky='nsew')
 
         # CPU Configuration
@@ -118,25 +121,25 @@ class DesktopApplication(ctk.CTk):
 
         # Browse Disk Button
         browse_btn = ctk.CTkButton(config_frame, text="Browse", command=self.browse_disk,
-                                   bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
+                                   bg_color='#00BCD4', fg_color='#00BCD4', hover_color='#26C6DA',
                                    corner_radius=30, width=100)
         browse_btn.grid(row=3, column=1, padx=10, pady=10, sticky='w')
 
         # Action Buttons Frame (for Create and List VM buttons)
-        action_frame = ctk.CTkFrame(self.vm_frame, bg_color='#4CB572', fg_color='#4CB572')
+        action_frame = ctk.CTkFrame(self.vm_frame, bg_color='#121212', fg_color='#121212')
         action_frame.grid(row=2, column=10, columnspan=3, padx=20, pady=20, sticky='nsew')
 
         # Create VM Button
         create_vm_btn = ctk.CTkButton(action_frame, text="Create Virtual Machine",
-                                      command=self.create_vm, bg_color='#135E4B',
-                                      fg_color='#135E4B', hover_color='#A1D8B5',
+                                      command=self.create_vm, bg_color='#00BCD4',
+                                      fg_color='#00BCD4', hover_color='#26C6DA',
                                       corner_radius=30, width=200)
         create_vm_btn.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
 
         # List VMs Button
         list_vms_btn = ctk.CTkButton(action_frame, text="List Virtual Machines",
-                                     command=self.list_vms, bg_color='#135E4B',
-                                     fg_color='#135E4B', hover_color='#A1D8B5',
+                                     command=self.list_vms, bg_color='#00BCD4',
+                                     fg_color='#00BCD4', hover_color='#26C6DA',
                                      corner_radius=30, width=200)
         list_vms_btn.grid(row=0, column=1, padx=10, pady=10, sticky='nsew')
 
@@ -243,7 +246,7 @@ class DesktopApplication(ctk.CTk):
             self.homepage_frame.destroy()
 
         # Docker Files Frame
-        self.docker_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
+        self.docker_frame = ctk.CTkFrame(self, bg_color='#121212', fg_color='#121212')
         self.docker_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20, anchor='center')
 
         # Title
@@ -251,7 +254,7 @@ class DesktopApplication(ctk.CTk):
         title_label.grid(row=0, column=10, columnspan=3, padx=20, pady=10, sticky='nsew')
 
         # Dockerfile Creation Section
-        create_frame = ctk.CTkFrame(self.docker_frame, bg_color='#4CB572', fg_color='#4CB572')
+        create_frame = ctk.CTkFrame(self.docker_frame, bg_color='#121212', fg_color='#121212')
         create_frame.grid(row=1, column=10, columnspan=3, padx=20, pady=20, sticky='nsew')
 
         # Base Image Input
@@ -287,13 +290,13 @@ class DesktopApplication(ctk.CTk):
         self.path_entry.grid(row=4, column=11, padx=10, pady=10, sticky='w')
 
         browse_btn = ctk.CTkButton(create_frame, text="Browse", command=self.set_dockerfile_path,
-                                   bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
+                                   bg_color='#00BCD4', fg_color='#00BCD4', hover_color='#26C6DA',
                                    corner_radius=30, width=70, font=('Helvetica', 12))
         browse_btn.grid(row=4, column=13, padx=10, pady=10, sticky='w')
 
         # Create Dockerfile Button
         create_btn = ctk.CTkButton(self.docker_frame, text="Create Dockerfile", command=self.create_dockerfile,
-                                   bg_color='#135E4B', fg_color='#135E4B', hover_color='#A1D8B5',
+                                   bg_color='#00BCD4', fg_color='#00BCD4', hover_color='#26C6DA',
                                    corner_radius=30, width=120, font=('Helvetica', 14))
         create_btn.grid(row=2, column=10, columnspan=3, padx=10, pady=20, sticky='nsew')
 
@@ -348,11 +351,11 @@ class DesktopApplication(ctk.CTk):
             self.homepage_frame.destroy()
 
         # Docker Hub Frame
-        self.hub_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
+        self.hub_frame = ctk.CTkFrame(self, bg_color='#121212', fg_color='#121212')
         self.hub_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
 
         # Search Frame
-        search_frame = ctk.CTkFrame(self.hub_frame, bg_color='#4CB572', fg_color='#4CB572')
+        search_frame = ctk.CTkFrame(self.hub_frame, bg_color='#121212', fg_color='#121212')
         search_frame.grid(row=0, column=0, padx=10, pady=10, sticky='nsew')
 
         # Search Entry
@@ -367,8 +370,8 @@ class DesktopApplication(ctk.CTk):
             search_frame,
             text="Search",
             command=lambda: self.search_docker_hub(search_entry.get()),
-            fg_color='#135E4B',
-            hover_color='#A1D8B5',
+            fg_color='#00BCD4',
+            hover_color='#26C6DA',
             corner_radius=30,
             width=100
         )
@@ -418,7 +421,7 @@ class DesktopApplication(ctk.CTk):
             self.homepage_frame.destroy()
 
         # Containers Frame
-        self.containers_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
+        self.containers_frame = ctk.CTkFrame(self, bg_color='#121212', fg_color='#121212')
         self.containers_frame.pack(expand=True, fill=ctk.BOTH, padx=20, pady=20)
 
         # Frame Label
@@ -427,25 +430,25 @@ class DesktopApplication(ctk.CTk):
         title_label.grid(row=0, column=0, columnspan=2, padx=20, pady=10, sticky='n')
 
         # Buttons Frame
-        btn_frame = ctk.CTkFrame(self.containers_frame, bg_color='#4CB572', fg_color='#4CB572')
+        btn_frame = ctk.CTkFrame(self.containers_frame, bg_color='#121212', fg_color='#121212')
         btn_frame.grid(row=1, column=0, columnspan=2, padx=10, pady=10, sticky='w')
 
         # List Images Button
         list_images_btn = ctk.CTkButton(btn_frame, text="List Docker Images",
                                         command=self.list_docker_images,
-                                        fg_color='#135E4B', hover_color='#A1D8B5',
+                                        fg_color='#00BCD4', hover_color='#26C6DA',
                                         corner_radius=30, width=150)
         list_images_btn.grid(row=0, column=0, padx=10, pady=5)
 
         # List Containers Button
         list_containers_btn = ctk.CTkButton(btn_frame, text="List Docker Containers",
                                             command=self.list_docker_containers,
-                                            fg_color='#135E4B', hover_color='#A1D8B5',
+                                            fg_color='#00BCD4', hover_color='#26C6DA',
                                             corner_radius=30, width=150)
         list_containers_btn.grid(row=0, column=1, padx=10, pady=5)
 
         # Listboxes Frame
-        list_frame = ctk.CTkFrame(self.containers_frame, bg_color='#4CB572', fg_color='#4CB572')
+        list_frame = ctk.CTkFrame(self.containers_frame, bg_color='#121212', fg_color='#121212')
         list_frame.grid(row=2, column=0, columnspan=2, padx=10, pady=10, sticky='nsew')
 
         # Images Label and Listbox
@@ -517,7 +520,7 @@ class DesktopApplication(ctk.CTk):
             self.homepage_frame.destroy()
 
         # Docker control frame centered
-        self.docker_control_frame = ctk.CTkFrame(self, bg_color='#4CB572', fg_color='#4CB572')
+        self.docker_control_frame = ctk.CTkFrame(self, bg_color='#121212', fg_color='#121212')
         self.docker_control_frame.pack(expand=True, fill=ctk.BOTH)
 
         # Title for Docker Control Panel
